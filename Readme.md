@@ -76,13 +76,13 @@
 ## Plugins
   - Inquisitor (https://github.com/polyfractal/elasticsearch-inquisitor)
 
-      $ {es_home}/bin/plugin -install bleskes/sense
-      $ open http://localhost:9200/_plugin/inquisitor
+        $ {es_home}/bin/plugin -install bleskes/sense
+        $ open http://localhost:9200/_plugin/inquisitor
 
   - Sense (https://github.com/bleskes/sense)
 
-      $ {es_home}/bin/plugin -install bleskes/sense
-      $ open http://localhost:9200/_plugin/sense
+        $ {es_home}/bin/plugin -install bleskes/sense
+        $ open http://localhost:9200/_plugin/sense
 
 
 
