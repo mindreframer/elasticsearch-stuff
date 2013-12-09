@@ -25,6 +25,9 @@
 
 
 
+## Slides
+  - [Terms of endearment - the ElasticSearch Query DSL explained](http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained)
+
 ### Queries:
   - http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-field-query.html
   - http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-queries.html
