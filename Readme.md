@@ -17,7 +17,7 @@
 ## Important concepts
 
 ### Ranking
-    - http://exploringelasticsearch.com/book/searching-data/ranking-based-on-similarity.html
+  - http://exploringelasticsearch.com/book/searching-data/ranking-based-on-similarity.html
 
 ### REST API
   - [REST API Spec](https://github.com/elasticsearch/elasticsearch-rest-api-spec) (!!!)
