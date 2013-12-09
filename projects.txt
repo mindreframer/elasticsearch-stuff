@@ -1,0 +1,2 @@
+https://github.com/elasticsearch/elasticsearch-rest-api-spec.git
+https://github.com/polyfractal/elasticsearch-inquisitor.git
