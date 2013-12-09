@@ -63,15 +63,11 @@
   - http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-snowball-analyzer.html
   - http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-snowball-tokenfilter.html
 
-### Tools:
-  - https://www.found.no/foundation/Sense-Elasticsearch-interface/
-  - https://github.com/bleskes/sense#other-goodies (with Shortcuts! :)))
-
-  - Playground for ES:
-    - https://www.found.no/play/
+### Playground for ES
+  - https://www.found.no/play/
 
 ### Rivers
-  http://jprante.github.io/guide/2012/05/26/Elasticsearch-Rivers.html
+  - http://jprante.github.io/guide/2012/05/26/Elasticsearch-Rivers.html
 
 ## Plugins
   - Inquisitor (https://github.com/polyfractal/elasticsearch-inquisitor)
@@ -80,6 +76,8 @@
         $ open http://localhost:9200/_plugin/inquisitor
 
   - Sense (https://github.com/bleskes/sense)
+    - https://www.found.no/foundation/Sense-Elasticsearch-interface/
+    - https://github.com/bleskes/sense#other-goodies (with Shortcuts! :)))
 
         $ {es_home}/bin/plugin -install bleskes/sense
         $ open http://localhost:9200/_plugin/sense
