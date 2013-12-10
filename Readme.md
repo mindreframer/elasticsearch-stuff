@@ -76,12 +76,12 @@
         $ open http://localhost:9200/_plugin/inquisitor
 
   - Sense (https://github.com/bleskes/sense)
+
+        $ {es_home}/bin/plugin -install bleskes/sense
+        $ open http://localhost:9200/_plugin/sense
+
     - https://www.found.no/foundation/Sense-Elasticsearch-interface/
     - https://github.com/bleskes/sense#other-goodies (with Shortcuts! :)))
-
-          $ {es_home}/bin/plugin -install bleskes/sense
-          $ open http://localhost:9200/_plugin/sense
-
 
 
 <!-- PROJECTS_LIST_START -->
