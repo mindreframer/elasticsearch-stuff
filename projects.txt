@@ -1,3 +1,4 @@
 https://github.com/bleskes/sense.git
 https://github.com/elasticsearch/elasticsearch-rest-api-spec.git
 https://github.com/polyfractal/elasticsearch-inquisitor.git
+https://github.com/brewster/elastictastic.git
