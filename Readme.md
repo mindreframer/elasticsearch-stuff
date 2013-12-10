@@ -30,7 +30,7 @@
 
 ## Slides
   - [Terms of endearment - the ElasticSearch Query DSL explained](http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained)
-  -[SEARCH MADE EASY FOR (WEB) DEVELOPERS, 2012.03](http://spinscale.github.io/elasticsearch/2012-03-jugm.html)
+  - [SEARCH MADE EASY FOR (WEB) DEVELOPERS, 2012.03](http://spinscale.github.io/elasticsearch/2012-03-jugm.html)
   - https://speakerdeck.com/elasticsearch
 
 ### Queries:
