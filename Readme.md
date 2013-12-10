@@ -44,6 +44,8 @@
   http://exploringelasticsearch.com/book/searching-data/analysis.html
   - GET /_analyze?analyzer=snowball&text=candles%20candle&pretty=true'
 
+### Similarity/Fuzzy
+  - http://elasticsearchserverbook.com/elasticsearch-0-90-similarities/
 
 ### Stopwords Workaround -> common terms query
   http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-common-terms-query.html
@@ -75,6 +77,8 @@
   - http://jprante.github.io/guide/2012/05/26/Elasticsearch-Rivers.html
 
 ## Plugins
+  - http://spinscale.github.io/elasticsearch-intro-plugins/#/37
+
   - Inquisitor (https://github.com/polyfractal/elasticsearch-inquisitor)
 
         $ {es_home}/bin/plugin -install bleskes/sense
