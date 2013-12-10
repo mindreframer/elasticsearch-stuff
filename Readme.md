@@ -106,6 +106,10 @@
       JSON specification for the Elasticsearch's REST API
        312 commits, last change: 2013-12-05 08:36:16, 6 stars, 3 forks
 
+    elasticsearch/elasticsearch-ruby:
+      Ruby integrations for Elasticsearch
+       236 commits, last change: 2013-12-09 08:48:59, 246 stars, 23 forks
+
     polyfractal/elasticsearch-inquisitor:
       Site plugin for Elasticsearch to help understand and debug queries.
        57 commits, last change: 2013-12-02 13:16:18, 207 stars, 14 forks
