@@ -43,6 +43,8 @@
 ## Query-tutorials
   - https://github.com/erlingwl/elasticsearch-tutorial
   - [Terms of endearment - the ElasticSearch Query DSL explained](http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained)
+  - http://www.spacevatican.org/2012/6/3/fun-with-elasticsearch-s-children-and-nested-documents/
+  - http://okfnlabs.org/blog/2013/07/01/elasticsearch-query-tutorial.html
 
 ### Analysis
   http://exploringelasticsearch.com/book/searching-data/analysis.html
