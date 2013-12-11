@@ -40,6 +40,10 @@
   - http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
   http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html (quite powerful...)
 
+## Query-tutorials
+  - https://github.com/erlingwl/elasticsearch-tutorial
+  - [Terms of endearment - the ElasticSearch Query DSL explained](http://www.slideshare.net/clintongormley/terms-of-endearment-the-elasticsearch-query-dsl-explained)
+
 ### Analysis
   http://exploringelasticsearch.com/book/searching-data/analysis.html
   - GET /_analyze?analyzer=snowball&text=candles%20candle&pretty=true'
@@ -69,6 +73,8 @@
   - http://jprante.github.io/lessons/2012/05/16/multilingual-analysis-for-title-search.html
   - http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-snowball-analyzer.html
   - http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-snowball-tokenfilter.html
+
+  - https://github.com/yakaz/elasticsearch-analysis-combo
 
 ### Playground for ES
   - https://www.found.no/play/
