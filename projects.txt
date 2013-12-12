@@ -4,3 +4,4 @@ https://github.com/ddnexus/flex.git
 https://github.com/elasticsearch/elasticsearch-rest-api-spec.git
 https://github.com/elasticsearch/elasticsearch-ruby.git
 https://github.com/polyfractal/elasticsearch-inquisitor.git
+https://github.com/elbii/plunk.git
