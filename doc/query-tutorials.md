@@ -1,5 +1,7 @@
-# http://www.elasticsearch.org/videos/introducing-query-dsl/?registered=1
-# http://www.elasticsearch.org/videos/introducing-custom-scoring-functions/
+## Videos
+
+  - [introducing query dsl, 2013.12.10](http://www.elasticsearch.org/videos/introducing-query-dsl/?registered=1)
+  - [introducing custom scoring functions, 2013.12.10](http://www.elasticsearch.org/videos/introducing-custom-scoring-functions/)
 
 query-types:
   - basic
