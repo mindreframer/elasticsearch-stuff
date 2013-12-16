@@ -5,6 +5,10 @@
     - https://www.found.no/foundation/elasticsearch-in-production/
     - https://www.found.no/foundation/keeping-elasticsearch-in-sync/
 
+## Introduction
+  - [Getting down and dirty with Elasticsearch - 2013.06, ca. 35 min. intro](http://www.youtube.com/watch?v=52G5ZzE0XpY) [http://www.slideshare.net/clintongormley/down-and-dirty-with-elasticsearch](Slides)
+
+
 ## Ruby/Rails integration
   Stretcher
     - http://blog.andrewvc.com/elasticsearch-rails-stretcher-at-pose
