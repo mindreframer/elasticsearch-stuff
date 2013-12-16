@@ -20,6 +20,10 @@
 ## Tipps/Tricks
   - [AN ELASTICSEARCH DEVELOPMENT WORKFLOW WITH CURL AND BASH, 2013.07](http://asquera.de/development/2013/07/10/an-elasticsearch-workflow/)
 
+## Performance
+  - [All about Elasticsearch Filter BitSets, 2013.06](http://euphonious-intuition.com/2013/05/all-about-elasticsearch-filter-bitsets/)
+
+
 ## Books/Tutorials:
   - http://exploringelasticsearch.com/
   - http://elasticsearchserverbook.com/
