@@ -42,9 +42,12 @@ $client ||= Elasticsearch::Client.new host: "localhost:#{ENV['TEST_CLUSTER_PORT'
 
 # Store Elasticsearch version
 #
-$es_version = $client.info['version']['number']
+es_version_info = $client.info['version']
+$es_version = es_version_info['number']
 
-puts '-'*80, "Elasticsearch #{ANSI.ansi($es_version, :bold)}", '-'*80
+puts '-'*80,
+     "Elasticsearch #{ANSI.ansi($es_version, :bold)} [#{es_version_info['build_hash'].to_s[0...7]}]".center(80),
+     '-'*80
 
 require 'test_helper'
 require 'test/unit'
@@ -177,7 +180,21 @@ module Elasticsearch
         skip = actions.select { |a| a['skip'] }.first
         if skip
           min, max = skip['skip']['version'].split('-').map(&:strip)
-          if min <= $es_version && max >= $es_version
+
+          min_normalized = sprintf "%03d-%03d-%03d",
+                           *min.split('.')
+                               .map(&:to_i)
+                               .fill(0, min.split('.').length, 3-min.split('.').length)
+
+          max_normalized = sprintf "%03d-%03d-%03d",
+                           *max.split('.')
+                               .map(&:to_i)
+                               .map(&:to_i)
+                               .fill(0, max.split('.').length, 3-max.split('.').length)
+
+          es_normalized  = sprintf "%03d-%03d-%03d", *$es_version.split('.').map(&:to_i)
+
+          if min_normalized <= es_normalized && max_normalized >= es_normalized
             return skip['skip']['reason'] ? skip['skip']['reason'] : true
           end
         end
