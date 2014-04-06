@@ -1,145 +1,103 @@
 require 'parslet'
-require 'active_support/core_ext'
+require 'chronic'
 
 module Plunk
   class Transformer < Parslet::Transform
+    # Base
+    rule(command: subtree(:command)) do
+      command
+    end
 
+    # Field = Value
+    rule(
+      field: simple(:field),
+      value: simple(:value)
+    ) do
+      Helper.query_builder(
+        String(field) + ":" + String(value)
+      )
+    end
+
+    # Limit
+    rule(limit: simple(:limit)) do
+      Helper.limit_builder(Integer(limit))
+    end
+
+    # Regexp
     rule(
       field: simple(:field),
       value: {
-        initial_query: subtree(:initial_query),
-        extractors: simple(:extractors)
-      },
-      op: '=',
-      timerange: {
-        quantity: simple(:quantity),
-        quantifier: simple(:quantifier)
-      }) do
-
-      int_quantity = quantity.to_s.to_i
-
-      start_time =
-        case quantifier
-        when 's'
-          int_quantity.seconds.ago
-        when 'm'
-          int_quantity.minutes.ago
-        when 'h'
-          int_quantity.hours.ago
-        when 'd'
-          int_quantity.days.ago
-        when 'w'
-          int_quantity.weeks.ago
-        end
-
-      end_time = Time.now
-
-      # recursively apply nested query
-      result_set = Plunk::Transformer.new.apply(initial_query)
-
-      json = JSON.parse result_set.eval
-      values = Plunk::Utils.extract_values json, extractors.to_s.split(',') 
-
-      if values.empty?
-        ResultSet.new(
-          start_time: start_time.utc.to_datetime.iso8601(3),
-          end_time: end_time.utc.to_datetime.iso8601(3))
-          
-      else
-        ResultSet.new(
-          query_string: "#{field}:(#{values.uniq.join(' OR ')})",
-          start_time: start_time.utc.to_datetime.iso8601(3),
-          end_time: end_time.utc.to_datetime.iso8601(3))
-      end
+        regexp: simple(:regexp)
+      }
+    ) do
+      Helper.regexp_builder(String(field), String(regexp))
     end
 
-    rule(match: simple(:value)) do
-      ResultSet.new(query_string: "#{value}")
+    # Value-only
+    rule(value: simple(:value)) do
+      Helper.query_builder(String(value))
     end
 
+    # Indices
+    rule(indices: simple(:indices)) do
+      list = String(indices).split(',').collect { |s| s.strip }
+      Helper.indices_builder(list)
+    end
+
+    # Last
+    rule(last: subtree(:last)) do
+      start_time = last
+      end_time = Helper.timestamp_format(Time.now)
+
+      Helper.range_builder(start_time, end_time)
+    end
+
+    # Window
     rule(
-      field: simple(:field),
-      value: {
-        initial_query: subtree(:initial_query),
-        extractors: simple(:extractors)
-      },
-      op: '=') do
-
-      # recursively apply nested query
-      result_set = Transformer.new.apply(initial_query)
-
-      json = JSON.parse result_set.eval
-      values = Utils.extract_values json, extractors.to_s.split(',') 
-
-      if values.empty?
-        ResultSet.new
-      else
-        ResultSet.new(query_string: "#{field}:(#{values.uniq.join(' OR ')})")
-      end
+      window_start: subtree(:window_start),
+      window_end: subtree(:window_end)
+    ) do
+      Helper.range_builder(window_start, window_end)
     end
 
-    rule(field: simple(:field), value: simple(:value), op: '=') do
-      ResultSet.new(query_string: "#{field}:#{value}")
+    # Time parts
+    rule(datetime: simple(:datetime)) do
+      String(datetime)
     end
-
     rule(
-      timerange: {
-        quantity: simple(:quantity),
-        quantifier: simple(:quantifier)
-      }) do
+      quantity: simple(:quantity),
+      quantifier: simple(:quantifier)
+    ) do
+      timestamp = Helper.time_query_to_timestamp(
+        Integer(quantity).abs, # last -1h same as last 1h
+        String(quantifier)
+      )
 
-      int_quantity = quantity.to_s.to_i
-
-      start_time =
-        case quantifier
-        when 's'
-          int_quantity.seconds.ago
-        when 'm'
-          int_quantity.minutes.ago
-        when 'h'
-          int_quantity.hours.ago
-        when 'd'
-          int_quantity.days.ago
-        when 'w'
-          int_quantity.weeks.ago
-        end
-
-      end_time = Time.now
-
-      ResultSet.new(
-        start_time: start_time.utc.to_datetime.iso8601(3),
-        end_time: end_time.utc.to_datetime.iso8601(3))
+      Helper.timestamp_format timestamp
+    end
+    rule(chronic_time: simple(:chronic_time)) do
+      Helper.timestamp_format Chronic.parse(chronic_time)
     end
 
-    rule(
-      search: simple(:result_set),
-      timerange: {
-        quantity: simple(:quantity),
-        quantifier: simple(:quantifier)
-      }) do
-
-      int_quantity = quantity.to_s.to_i
-
-      start_time =
-        case quantifier
-        when 's'
-          int_quantity.seconds.ago
-        when 'm'
-          int_quantity.minutes.ago
-        when 'h'
-          int_quantity.hours.ago
-        when 'd'
-          int_quantity.days.ago
-        when 'w'
-          int_quantity.weeks.ago
-        end
-
-      end_time = Time.now
-
-      ResultSet.new(
-        query_string: result_set.query_string,
-        start_time: start_time.utc.to_datetime.iso8601(3),
-        end_time: end_time.utc.to_datetime.iso8601(3))
+    # Negate
+    rule(negate: subtree(:not)) do
+      { not: negate }
     end
+
+    # Command joining
+    rule(:or => {
+      left: subtree(:left),
+      right: subtree(:right)
+    }) do
+      Helper.combine_subtrees(left, right, :or)
+    end
+
+    rule(:and => {
+      left: subtree(:left),
+      right: subtree(:right)
+    }) do
+      Helper.combine_subtrees(left, right, :and)
+    end
+
   end
 end
