@@ -1,0 +1,7 @@
+language: ruby
+rvm:
+    - 1.9.3
+notifications:
+    email:
+        - cas13091@gmail.com
+script: "bundle exec rspec"
