@@ -14,6 +14,13 @@ library.
 
 The library is compatible with Ruby 1.8.7 or higher.
 
+The library is compatible with Elasticsearch 0.90 and 1.0 -- you have to install and use a matching version, though.
+
+The 1.x versions and the master branch are compatible with **Elasticsearch 1.0** API.
+
+To use the **Elasticsearch 0.90** API, install the **0.4.x** gem version or use the corresponding
+[`0.4`](https://github.com/elasticsearch/elasticsearch-ruby/tree/0.4) branch.
+
 ## Installation
 
 Install the package from [Rubygems](https://rubygems.org):
@@ -47,17 +54,18 @@ require 'elasticsearch'
 client = Elasticsearch::Client.new log: true
 
 client.index  index: 'myindex', type: 'mytype', id: 1, body: { title: 'Test' }
-# => {"ok"=>true, "_index"=>"myindex", ...}
+# => {"_index"=>"myindex", ... "created"=>true}
 
 client.search index: 'myindex', body: { query: { match: { title: 'test' } } }
 # => {"took"=>2, ..., "hits"=>{"total":5, ...}}
 ```
 
-Full documentation is available at <http://rubydoc.info/gems/elasticsearch-api>.
+Full documentation and examples are included as RDoc annotations in the source code
+and available online at <http://rubydoc.info/gems/elasticsearch-api>.
 
 ### Usage with a custom client
 
-When you want to mix the library into you own client, it must conform to a following _contract_:
+When you want to mix the library into your own client, it must conform to a following _contract_:
 
 * It responds to a `perform_request(method, path, params, body)` method,
 * the method returns an object with `status`, `body` and `headers` methods.
@@ -143,7 +151,7 @@ mash = Hashie::Mash.new response
 mash.hits.hits.first._source.title
 # => 'Test'
 
-response.facets.tags.terms.first
+mash.facets.tags.terms.first
 # => #<Hashie::Mash count=3 term="z">
 ```
 

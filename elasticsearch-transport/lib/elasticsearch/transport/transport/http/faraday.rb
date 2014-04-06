@@ -22,7 +22,7 @@ module Elasticsearch
                 method.downcase.to_sym,
                 url,
                 ( body ? __convert_to_json(body) : nil ),
-                {'Content-Type' => 'application/json'}
+                {}
             end
           end
 
@@ -39,7 +39,7 @@ module Elasticsearch
 
                 Connections::Connection.new \
                   :host => host,
-                  :connection => ::Faraday::Connection.new( :url => url, &@block )
+                  :connection => ::Faraday::Connection.new(url, (options[:transport_options] || {}), &@block )
               },
               :selector_class => options[:selector_class],
               :selector => options[:selector]

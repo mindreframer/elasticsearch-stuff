@@ -1,4 +1,10 @@
 require 'test_helper'
+
+if JRUBY
+  puts "'#{File.basename(__FILE__)}' not supported on JRuby #{RUBY_VERSION}"
+  exit(0)
+end
+
 require 'elasticsearch/transport/transport/http/curb'
 require 'curb'
 
@@ -47,6 +53,16 @@ class Elasticsearch::Transport::Transport::HTTP::FaradayTest < Test::Unit::TestC
       @transport.perform_request 'POST', '/', {}, '{"foo":"bar"}'
     end
 
+    should "set application/json header" do
+      @transport.connections.first.connection.expects(:http).with(:GET).returns(stub_everything)
+      @transport.connections.first.connection.expects(:body_str).returns('{"foo":"bar"}')
+      @transport.connections.first.connection.expects(:header_str).returns('HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=UTF-8\r\nContent-Length: 311\r\n\r\n')
+
+      response = @transport.perform_request 'GET', '/'
+
+      assert_equal 'application/json', response.headers['content-type']
+    end
+
     should "handle HTTP methods" do
       @transport.connections.first.connection.expects(:http).with(:HEAD).returns(stub_everything)
       @transport.connections.first.connection.expects(:http).with(:GET).returns(stub_everything)
@@ -64,8 +80,7 @@ class Elasticsearch::Transport::Transport::HTTP::FaradayTest < Test::Unit::TestC
         curl.headers["User-Agent"] = "myapp-0.0"
       end
 
-      assert_equal( {"Content-Type"=>"application/json", "User-Agent"=>"myapp-0.0"},
-                    transport.connections.first.connection.headers )
+      assert_equal "myapp-0.0", transport.connections.first.connection.headers["User-Agent"]
     end
 
     should "set the credentials if passed" do

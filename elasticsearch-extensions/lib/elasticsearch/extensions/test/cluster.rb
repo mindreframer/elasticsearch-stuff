@@ -30,7 +30,7 @@ module Elasticsearch
       # @see Cluster#stop Cluster.stop
       #
       module Cluster
-        @@number_of_nodes = 0
+        @@number_of_nodes = (ENV['TEST_CLUSTER_NODES'] || 2).to_i
 
         # Starts a cluster
         #
@@ -88,11 +88,13 @@ module Elasticsearch
                 @@number_of_nodes.to_s.ansi(:bold, :faint) +
                 " Elasticsearch nodes..".ansi(:faint)
 
+          pids = []
+
           @@number_of_nodes.times do |n|
             n += 1
             pid = Process.spawn <<-COMMAND
               #{arguments[:command]} \
-                -D es.foreground=no \
+                -D es.foreground=yes \
                 -D es.cluster.name=#{arguments[:cluster_name]} \
                 -D es.node.name=#{arguments[:node_name]}-#{n} \
                 -D es.http.port=#{arguments[:port].to_i + (n-1)} \
@@ -104,9 +106,16 @@ module Elasticsearch
                 -D es.discovery.zen.ping.multicast.enabled=true \
                 -D es.node.test=true \
                 #{arguments[:es_params]} \
-                > /dev/null 2>&1
+                > /dev/null
             COMMAND
             Process.detach pid
+            pids << pid
+          end
+
+          # Check for proceses running
+          if `ps -p #{pids.join(' ')}`.split("\n").size < @@number_of_nodes+1
+            STDERR.puts "", "[!!!] Process failed to start (see output above)".ansi(:red)
+            exit(1)
           end
 
           wait_for_green(arguments[:port], arguments[:timeout])
@@ -129,7 +138,12 @@ module Elasticsearch
         def stop(arguments={})
           arguments[:port] ||= (ENV['TEST_CLUSTER_PORT'] || 9250).to_i
 
-          nodes = JSON.parse(Net::HTTP.get(URI("http://localhost:#{arguments[:port]}/_cluster/nodes/?process"))) rescue nil
+          nodes = begin
+            JSON.parse(Net::HTTP.get(URI("http://localhost:#{arguments[:port]}/_nodes/?process")))
+          rescue Exception => e
+            STDERR.puts "[!] Exception raised when stopping the cluster: #{e.inspect}".ansi(:red)
+            nil
+          end
 
           return false if nodes.nil? or nodes.empty?
 
@@ -207,6 +221,8 @@ module Elasticsearch
                 nil
               end
 
+              puts response.inspect if ENV['DEBUG']
+
               if response && response['status'] == status && ( @@number_of_nodes.nil? || @@number_of_nodes == response['number_of_nodes'].to_i  )
                 __print_cluster_info(port) and break
               end
@@ -225,7 +241,7 @@ module Elasticsearch
         #
         def __print_cluster_info(port)
           health = JSON.parse(Net::HTTP.get(URI("http://localhost:#{port}/_cluster/health")))
-          nodes  = JSON.parse(Net::HTTP.get(URI("http://localhost:#{port}/_cluster/nodes/?process")))
+          nodes  = JSON.parse(Net::HTTP.get(URI("http://localhost:#{port}/_nodes/process,http")))
           master = JSON.parse(Net::HTTP.get(URI("http://localhost:#{port}/_cluster/state")))['master_node']
 
           puts "\n",
@@ -237,7 +253,7 @@ module Elasticsearch
           nodes['nodes'].each do |id, info|
             m = id == master ? '+' : '-'
             puts ''.ljust(20) +
-                 "#{m} #{info['name'].ansi(:bold)} | version: #{info['version']}, pid: #{info['process']['id']}".ansi(:faint)
+                 "#{m} #{info['name'].ansi(:bold)} | version: #{info['version']}, pid: #{info['process']['id']}, address: #{info['http']['bound_address']}".ansi(:faint)
           end
         end
 

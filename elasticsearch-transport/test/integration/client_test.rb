@@ -2,10 +2,15 @@ require 'test_helper'
 
 class Elasticsearch::Transport::ClientIntegrationTest < Elasticsearch::Test::IntegrationTestCase
   startup do
-    Elasticsearch::Extensions::Test::Cluster.start if ENV['SERVER'] and not Elasticsearch::Extensions::Test::Cluster.running?
+    Elasticsearch::Extensions::Test::Cluster.start(nodes: 2) if ENV['SERVER'] and not Elasticsearch::Extensions::Test::Cluster.running?
   end
 
   context "Elasticsearch client" do
+    teardown do
+      begin; Object.send(:remove_const, :Typhoeus); rescue NameError; end
+      begin; Object.send(:remove_const, :Patron); rescue NameError; end
+    end
+
     setup do
       @port = (ENV['TEST_CLUSTER_PORT'] || 9250).to_i
       system "curl -X DELETE http://localhost:#{@port}/_all > /dev/null 2>&1"
@@ -36,12 +41,11 @@ class Elasticsearch::Transport::ClientIntegrationTest < Elasticsearch::Test::Int
       @client.perform_request 'GET', '_cluster/health?wait_for_status=green', {}
 
       response = @client.perform_request 'GET', 'myindex/mydoc/1?routing=XYZ'
-      assert_equal true, response.body['exists']
+      assert_equal 200, response.status
       assert_equal 'bar', response.body['_source']['foo']
+
       assert_raise Elasticsearch::Transport::Transport::Errors::NotFound do
-        response = @client.perform_request 'GET', 'myindex/mydoc/1?routing=ABC'
-        assert_nil response.body['_source']
-        assert_equal false, response.body['exists']
+        @client.perform_request 'GET', 'myindex/mydoc/1?routing=ABC'
       end
     end
 
@@ -49,20 +53,20 @@ class Elasticsearch::Transport::ClientIntegrationTest < Elasticsearch::Test::Int
       setup do
         @client = Elasticsearch::Client.new \
                     hosts:  ["localhost:#{@port}", "localhost:#{@port+1}" ],
-                    logger: @logger
+                    logger: (ENV['QUIET'] ? nil : @logger)
       end
 
       should "rotate nodes" do
         # Hit node 1
-        response = @client.perform_request 'GET', '_cluster/nodes/_local'
+        response = @client.perform_request 'GET', '_nodes/_local'
         assert_equal 'node-1', response.body['nodes'].to_a[0][1]['name']
 
         # Hit node 2
-        response = @client.perform_request 'GET', '_cluster/nodes/_local'
+        response = @client.perform_request 'GET', '_nodes/_local'
         assert_equal 'node-2', response.body['nodes'].to_a[0][1]['name']
 
         # Hit node 1
-        response = @client.perform_request 'GET', '_cluster/nodes/_local'
+        response = @client.perform_request 'GET', '_nodes/_local'
         assert_equal 'node-1', response.body['nodes'].to_a[0][1]['name']
       end
     end
@@ -72,30 +76,30 @@ class Elasticsearch::Transport::ClientIntegrationTest < Elasticsearch::Test::Int
         @port = (ENV['TEST_CLUSTER_PORT'] || 9250).to_i
         @client = Elasticsearch::Client.new \
                     hosts: ["localhost:#{@port}", "foobar1"],
-                    logger: @logger,
+                    logger: (ENV['QUIET'] ? nil : @logger),
                     retry_on_failure: true
       end
 
       should "retry the request with next server" do
         assert_nothing_raised do
-          5.times { @client.perform_request 'GET', '_cluster/nodes/_local' }
+          5.times { @client.perform_request 'GET', '_nodes/_local' }
         end
       end
 
       should "raise exception when it cannot get any healthy server" do
         @client = Elasticsearch::Client.new \
                   hosts: ["localhost:#{@port}", "foobar1", "foobar2", "foobar3"],
-                  logger: @logger,
+                  logger: (ENV['QUIET'] ? nil : @logger),
                   retry_on_failure: 1
 
         assert_nothing_raised do
           # First hit is OK
-          @client.perform_request 'GET', '_cluster/nodes/_local'
+          @client.perform_request 'GET', '_nodes/_local'
         end
 
         assert_raise Faraday::Error::ConnectionFailed do
           # Second hit fails
-          @client.perform_request 'GET', '_cluster/nodes/_local'
+          @client.perform_request 'GET', '_nodes/_local'
         end
       end
     end
@@ -104,18 +108,27 @@ class Elasticsearch::Transport::ClientIntegrationTest < Elasticsearch::Test::Int
       setup do
         @client = Elasticsearch::Client.new \
                   hosts: ["localhost:#{@port}", "foobar1", "foobar2"],
-                  logger: @logger,
+                  logger: (ENV['QUIET'] ? nil : @logger),
                   reload_on_failure: true
       end
 
       should "reload the connections" do
         assert_equal 3, @client.transport.connections.size
         assert_nothing_raised do
-          5.times { @client.perform_request 'GET', '_cluster/nodes/_local' }
+          5.times { @client.perform_request 'GET', '_nodes/_local' }
         end
         assert_equal 2, @client.transport.connections.size
       end
     end
 
+    context "with Faraday adapters" do
+      should "automatically use the Patron client when loaded" do
+        require 'patron'
+        client = Elasticsearch::Transport::Client.new host: "localhost:#{@port}"
+
+        response = @client.perform_request 'GET', '_cluster/health'
+        assert_equal 200, response.status
+      end unless JRUBY
+    end
   end
 end
