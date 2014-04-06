@@ -129,11 +129,11 @@
 
     bleskes/sense:
       a json aware ElasticSearch front end
-       252 commits, last change: 2013-11-03 11:11:47, 158 stars, 20 forks
+       254 commits, last change: 2014-04-01 10:16:00, 225 stars, 39 forks
 
     brewster/elastictastic:
       Object-document mapper and lightweight API adapter for ElasticSearch
-       318 commits, last change: 2013-10-31 03:07:33, 73 stars, 10 forks
+       318 commits, last change: 2013-10-31 06:07:33, 77 stars, 10 forks
 
     cschuch/daedal-sl:
       Ruby query-writing DSL for ElasticSearch built on Daedal
@@ -145,19 +145,19 @@
 
     ddnexus/flex:
       The ultimate ruby client for elasticsearch.
-       326 commits, last change: 2013-11-14 04:33:53, 31 stars, 6 forks
+       326 commits, last change: 2013-11-14 07:33:53, 51 stars, 9 forks
 
     elasticsearch/elasticsearch-rest-api-spec:
-      JSON specification for the Elasticsearch's REST API
-       312 commits, last change: 2013-12-05 08:36:16, 6 stars, 3 forks
+      JSON specification for the Elasticsearch's REST API. Deprecated - moved into the elasticsearch/elasticsearch repo
+       317 commits, last change: 2014-01-28 16:29:39, 8 stars, 10 forks
 
     elasticsearch/elasticsearch-ruby:
       Ruby integrations for Elasticsearch
-       236 commits, last change: 2013-12-09 08:48:59, 246 stars, 23 forks
+       413 commits, last change: 2014-04-04 14:28:35, 454 stars, 45 forks
 
     elbii/plunk:
       Human-friendly query language for Elasticsearch
-       20 commits, last change: 2013-12-11 14:14:39, 0 stars, 0 forks
+       78 commits, last change: 2014-03-31 13:43:42, 8 stars, 0 forks
 
     npolar/icelastic:
       Icelastic can be used to integrate Elasticsearch in your Rack applications. It offers advanced url query parsing for a wide range of search senarios.
@@ -173,7 +173,7 @@
 
     polyfractal/elasticsearch-inquisitor:
       Site plugin for Elasticsearch to help understand and debug queries.
-       57 commits, last change: 2013-12-02 13:16:18, 207 stars, 14 forks
+       60 commits, last change: 2014-03-20 21:00:03, 275 stars, 29 forks
 
     PoseBiz/stretcher:
       Fast, Elegant, ElasticSearch client
