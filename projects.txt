@@ -5,3 +5,11 @@ https://github.com/elasticsearch/elasticsearch-rest-api-spec.git
 https://github.com/elasticsearch/elasticsearch-ruby.git
 https://github.com/elbii/plunk.git
 https://github.com/polyfractal/elasticsearch-inquisitor.git
+https://github.com/PoseBiz/stretcher.git
+https://github.com/toptal/chewy.git
+https://github.com/npolar/icelastic.git
+https://github.com/bentona/sweatpants.git
+https://github.com/nz/elasticmill.git
+https://github.com/cschuch/daedal.git
+https://github.com/cschuch/daedal-sl.git
+https://github.com/pawelrychlik/duplitector.git
