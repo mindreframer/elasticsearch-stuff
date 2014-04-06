@@ -28,7 +28,12 @@ module Elasticsearch
 
               connection.connection.http(method.to_sym)
 
-              Response.new connection.connection.response_code, connection.connection.body_str
+              headers = {}
+              headers['content-type'] = 'application/json' if connection.connection.header_str =~ /\/json/
+
+              Response.new connection.connection.response_code,
+                           connection.connection.body_str,
+                           headers
             end
           end
 
@@ -44,7 +49,7 @@ module Elasticsearch
 
                 client = ::Curl::Easy.new
                 client.resolve_mode = :ipv4
-                client.headers      = {'User-Agent' => "Curb #{Curl::CURB_VERSION}", 'Content-Type' => 'application/json' }
+                client.headers      = {'User-Agent' => "Curb #{Curl::CURB_VERSION}"}
                 client.url          = __full_url(host)
 
                 if host[:user]

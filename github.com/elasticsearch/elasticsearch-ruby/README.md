@@ -2,9 +2,23 @@
 
 This repository contains Ruby integrations for [Elasticsearch](http://elasticsearch.org):
 
-* A client for connecting to an Elasticsearch cluster
-* A Ruby API for the Elasticsearch's REST API
-* Various extensions and utilities
+* a client for connecting to an Elasticsearch cluster,
+* a Ruby API for the Elasticsearch's REST API,
+* various extensions and utilities.
+
+For integration with Ruby models and Rails applications,
+see the <https://github.com/elasticsearch/elasticsearch-rails> project.
+
+## Compatibility
+
+The libraries are compatible with Ruby 1.8.7 and higher.
+
+The library is compatible with Elasticsearch 0.90 and 1.0 -- you have to install and use a matching version, though.
+
+The 1.x versions and the master branch are compatible with **Elasticsearch 1.0** API.
+
+To use the **Elasticsearch 0.90** API, install the **0.4.x** gem version or use the corresponding
+[`0.4`](https://github.com/elasticsearch/elasticsearch-ruby/tree/0.4) branch.
 
 ## Installation
 
@@ -47,25 +61,31 @@ client.search q: 'test'
 # etc.
 ```
 
-Please refer to the specific library documentation for detailed information and examples.
+Both of these libraries are extensively documented.
+**Please read the [`elasticsearch-transport`](http://rubydoc.info/gems/elasticsearch-transport)
+and the [`elasticsearch-api`](http://rubydoc.info/gems/elasticsearch-api) documentation carefully.**
+
+Keep in mind, that for optimal performance, you should use a HTTP library which supports persistent
+("keep-alive") connections, e.g. [Typhoeus](https://github.com/typhoeus/typhoeus) or
+[Patron](https://github.com/toland/patron). Just `require 'typhoeus'` or `require 'patron'` in your code.
 
 ### Transport
 
-* [[README]](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-transport/README.md)
-* [[Documentation]](http://rubydoc.info/gems/elasticsearch-transport)
-* [[Test Suite]](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-transport/test)
+* [README](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-transport/README.md)
+* [Documentation](http://rubydoc.info/gems/elasticsearch-transport)
+* [Test Suite](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-transport/test)
 
 ### API
 
-* [[README]](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-api/README.md)
-* [[Documentation]](http://rubydoc.info/gems/elasticsearch-api/)
-* [[Test Suite]](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-api/test)
+* [README](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-api/README.md)
+* [Documentation](http://rubydoc.info/gems/elasticsearch-api/)
+* [Test Suite](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-api/test)
 
 ### Extensions
 
-* [[README]](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-extensions/README.md)
-* [[Documentation]](http://rubydoc.info/gems/elasticsearch-extensions/)
-* [[Test Suite]](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-extensions/test)
+* [README](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-extensions/README.md)
+* [Documentation](http://rubydoc.info/gems/elasticsearch-extensions/)
+* [Test Suite](https://github.com/elasticsearch/elasticsearch-ruby/blob/master/elasticsearch-extensions/test)
 
 ## License
 

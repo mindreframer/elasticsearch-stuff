@@ -21,6 +21,10 @@ module Elasticsearch
             assert_equal 'foo%5Ebar', __escape('foo^bar')
           end
 
+          should "not encode asterisks" do
+            assert_equal '*', __escape('*')
+          end
+
           should "use CGI.escape by default" do
             CGI.expects(:escape)
             __escape('foo bar')
@@ -31,7 +35,7 @@ module Elasticsearch
             CGI.expects(:escape).never
             EscapeUtils.expects(:escape_url)
             __escape('foo bar')
-          end unless RUBY_1_8
+          end unless RUBY_1_8 || JRUBY
 
         end
 
@@ -147,6 +151,17 @@ module Elasticsearch
             assert_raise ArgumentError do
               __validate_and_extract_params({ :foo => 'qux', :bam => 'mux' }, [:foo, :bar])
             end
+          end
+
+          should "not raise an exception for COMMON_PARAMS" do
+            assert_nothing_raised do
+              __validate_and_extract_params({ :index => 'foo'}, [:foo])
+            end
+          end
+
+          should "extract COMMON_QUERY_PARAMS" do
+            assert_equal( { :format => 'yaml' },
+                          __validate_and_extract_params( { :format => 'yaml' } ) )
           end
 
         end

@@ -3,6 +3,9 @@ require 'pathname'
 subprojects = %w| elasticsearch elasticsearch-transport elasticsearch-api elasticsearch-extensions |
 __current__ = Pathname( File.expand_path('..', __FILE__) )
 
+# TODO: Figure out "bundle exec or not"
+# subprojects.each { |project| $LOAD_PATH.unshift __current__.join(project, "lib").to_s }
+
 task :default do
   system "rake --tasks"
 end
@@ -22,10 +25,13 @@ task :bundle => 'bundle:install'
 namespace :bundle do
   desc "Run `bundle install` in all subprojects"
   task :install do
+    puts '-'*80
     sh "bundle install --gemfile #{__current__}/Gemfile"
+    puts
     subprojects.each do |project|
-      sh "bundle install --gemfile #{__current__.join(project)}/Gemfile"
       puts '-'*80
+      sh "bundle install --gemfile #{__current__.join(project)}/Gemfile"
+      puts
     end
   end
 
@@ -38,31 +44,101 @@ namespace :bundle do
   end
 end
 
-namespace :test do
-  task :bundle => 'bundle:install'
-
-  desc "Update the submodule with YAML tests to the latest master"
+namespace :elasticsearch do
+  desc "Update the submodule with Elasticsearch core repository"
   task :update do
     sh "git submodule foreach git reset --hard"
-    sh "git --git-dir=#{__current__.join('elasticsearch-api/spec/.git')} --work-tree=#{__current__.join('elasticsearch-api/spec/')} pull origin master"
+    puts
+    sh "git --git-dir=#{__current__.join('support/elasticsearch/.git')} --work-tree=#{__current__.join('support/elasticsearch')} fetch origin --verbose"
+    begin
+      puts %x[git --git-dir=#{__current__.join('support/elasticsearch/.git')} --work-tree=#{__current__.join('support/elasticsearch')} pull --verbose]
+    rescue Exception => @exception
+      @failed = true
+    end
+
+    if @failed || !$?.success?
+      STDERR.puts "", "[!] Error while pulling. #{@exception}"
+    end
+
+    puts "\n", "CHANGES:", '-'*80
+    sh "git --git-dir=#{__current__.join('support/elasticsearch/.git')} --work-tree=#{__current__.join('support/elasticsearch')} log --oneline ORIG_HEAD..HEAD | cat", :verbose => false
   end
+
+  desc <<-DESC
+    Build Elasticsearch for the specified branch ('origin/master' by default)"
+
+    Build a specific branch:
+
+        $ rake elasticsearch:build[origin/1.x]
+
+    The task will execute `git fetch` to synchronize remote branches.
+  DESC
+  task :build, :branch do |task, args|
+    Rake::Task['elasticsearch:status'].invoke
+    puts '-'*80
+
+    branch = args[:branch] || 'origin/master'
+    current_branch = `git --git-dir=#{__current__.join('support/elasticsearch/.git')} --work-tree=#{__current__.join('support/elasticsearch')} branch --no-color`.split("\n").select { |b| b =~ /^\*/ }.first.gsub(/^\*\s*/, '')
+    begin
+      sh <<-CODE
+        mkdir -p #{__current__.join('tmp/builds')} && \
+        cd #{__current__.join('support/elasticsearch')} && \
+        git fetch origin --quiet && \
+        git checkout #{branch} && \
+        mvn clean && \
+        mvn package -DskipTests && \
+        build=`ls target/releases/elasticsearch-*.tar.gz | xargs -0 basename` && \
+        tar xvf target/releases/elasticsearch-*.tar.gz -C #{__current__.join('tmp/builds')} && \
+        echo && echo && echo "Built: $build"
+      CODE
+    end
+
+    puts "", '-'*80, ""
+    Rake::Task['elasticsearch:builds'].invoke
+  end
+
+  desc "Display the info for all branches in the Elasticsearch submodule"
+  task :status do
+    sh "git --git-dir=#{__current__.join('support/elasticsearch/.git')} --work-tree=#{__current__.join('support/elasticsearch')} branch -v -v", :verbose => false
+  end
+
+  desc "Display the list of builds"
+  task :builds do
+    puts "Builds:"
+      Dir.entries(__current__.join('tmp/builds')).reject { |f| f =~ /^\./ }.each do |build|
+        puts "* #{build}"
+      end
+  end
+
+  desc "Display the history of the 'rest-api-spec' repo"
+  task :changes do
+    STDERR.puts "Log: #{__current__.join('support/elasticsearch')}/rest-api-spec", ""
+    sh "git --git-dir=#{__current__.join('support/elasticsearch/.git')} --work-tree=#{__current__.join('support/elasticsearch')} log --pretty=format:'%C(yellow)%h%Creset %s \e[2m[%ar by %an]\e[0m' -- rest-api-spec", :verbose => false
+  end
+end
+
+namespace :test do
+  task :bundle => 'bundle:install'
 
   desc "Run unit tests in all subprojects"
   task :unit do
     Rake::Task['test:ci_reporter'].invoke if ENV['CI']
     subprojects.each do |project|
-      sh "cd #{__current__.join(project)} && unset BUNDLE_GEMFILE && bundle exec rake test:unit"
       puts '-'*80
+      sh "cd #{__current__.join(project)} && unset BUNDLE_GEMFILE && bundle exec rake test:unit"
+      puts "\n"
     end
     Rake::Task['test:coveralls'].invoke if ENV['CI'] && defined?(RUBY_VERSION) && RUBY_VERSION > '1.9'
   end
 
   desc "Run integration tests in all subprojects"
-  task :integration => :update do
+  task :integration do
+    Rake::Task['elasticsearch:update'].invoke
     Rake::Task['test:ci_reporter'].invoke if ENV['CI']
     subprojects.each do |project|
-      sh "cd #{__current__.join(project)} && unset BUNDLE_GEMFILE && bundle exec rake test:integration"
       puts '-'*80
+      sh "cd #{__current__.join(project)} && unset BUNDLE_GEMFILE && bundle exec rake test:integration"
+      puts "\n"
     end
     Rake::Task['test:coveralls'].invoke if ENV['CI'] && defined?(RUBY_VERSION) && RUBY_VERSION > '1.9'
   end
@@ -71,8 +147,9 @@ namespace :test do
   task :all do
     Rake::Task['test:ci_reporter'].invoke if ENV['CI']
     subprojects.each do |project|
-      sh "cd #{__current__.join(project)} && unset BUNDLE_GEMFILE && bundle exec rake test:all"
       puts '-'*80
+      sh "cd #{__current__.join(project)} && unset BUNDLE_GEMFILE && bundle exec rake test:all"
+      puts "\n"
     end
   end
 
@@ -93,7 +170,7 @@ namespace :test do
     end
   end
 
-  namespace :server do
+  namespace :cluster do
     desc "Start Elasticsearch nodes for tests"
     task :start do
       require 'elasticsearch/extensions/test/cluster'
@@ -104,6 +181,12 @@ namespace :test do
     task :stop do
       require 'elasticsearch/extensions/test/cluster'
       Elasticsearch::Extensions::Test::Cluster.stop
+    end
+
+    task :status do
+      require 'elasticsearch/extensions/test/cluster'
+      (puts "\e[31m[!] Test cluster not running\e[0m"; exit(1)) unless Elasticsearch::Extensions::Test::Cluster.running?
+      Elasticsearch::Extensions::Test::Cluster.__print_cluster_info(ENV['TEST_CLUSTER_PORT'] || 9250)
     end
   end
 end
@@ -119,6 +202,7 @@ end
 desc "Release all subprojects to Rubygems"
 task :release do
   subprojects.each do |project|
+    next if project == 'elasticsearch-extensions'
     sh "cd #{__current__.join(project)} && rake release"
     puts '-'*80
   end

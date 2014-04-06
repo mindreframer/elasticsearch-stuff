@@ -48,6 +48,14 @@ class Elasticsearch::Transport::ClientTest < Test::Unit::TestCase
       assert_respond_to client.transport.tracer, :info
     end
 
+    should "initialize the default transport class" do
+      Elasticsearch::Transport::Client::DEFAULT_TRANSPORT_CLASS.any_instance.
+        unstub(:__build_connections)
+
+      client = Elasticsearch::Client.new
+      assert_match /Faraday/, client.transport.connections.first.connection.headers['User-Agent']
+    end
+
     context "when passed hosts" do
       should "have localhost by default" do
         c = Elasticsearch::Transport::Client.new
@@ -158,6 +166,36 @@ class Elasticsearch::Transport::ClientTest < Test::Unit::TestCase
 
         @client.__extract_hosts(hosts, :randomize_hosts => true)
         assert_same_elements hosts, @client.__extract_hosts(hosts, :randomize_hosts => true)
+      end
+    end
+
+    context "detecting adapter for Faraday" do
+      setup do
+        Elasticsearch::Transport::Client::DEFAULT_TRANSPORT_CLASS.any_instance.unstub(:__build_connections)
+        begin; Object.send(:remove_const, :Typhoeus); rescue NameError; end
+        begin; Object.send(:remove_const, :Patron);   rescue NameError; end
+      end
+
+      should "use the default adapter" do
+        c = Elasticsearch::Transport::Client.new
+        handlers = c.transport.connections.all.first.connection.builder.handlers
+
+        assert_includes handlers, Faraday::Adapter::NetHttp
+      end
+
+      should "use the adapter from arguments" do
+        c = Elasticsearch::Transport::Client.new :adapter => :typhoeus
+        handlers = c.transport.connections.all.first.connection.builder.handlers
+
+        assert_includes handlers, Faraday::Adapter::Typhoeus
+      end
+
+      should "detect the adapter" do
+        require 'patron'
+        c = Elasticsearch::Transport::Client.new
+        handlers = c.transport.connections.all.first.connection.builder.handlers
+
+        assert_includes handlers, Faraday::Adapter::Patron
       end
     end
 

@@ -13,6 +13,7 @@ module Elasticsearch
       #
       # @api private
       def __escape(string)
+        return string if string == '*'
         defined?(EscapeUtils) ? EscapeUtils.escape_url(string.to_s) : CGI.escape(string.to_s)
       end
 
@@ -29,8 +30,6 @@ module Elasticsearch
       #
       # @api private
       def __listify(*list)
-        # require 'pry'
-        # binding.pry
         Array(list).flatten.
           map { |e| e.respond_to?(:split) ? e.split(',') : e }.
           flatten.
@@ -123,10 +122,10 @@ module Elasticsearch
       def __validate_and_extract_params(arguments, valid_params=[])
         arguments.each do |k,v|
           raise ArgumentError, "URL parameter '#{k}' is not supported" \
-            unless valid_params.include?(k) || COMMON_PARAMS.include?(k)
+            unless COMMON_PARAMS.include?(k) || COMMON_QUERY_PARAMS.include?(k) || valid_params.include?(k)
         end
 
-        params = arguments.select { |k,v| valid_params.include?(k) }
+        params = arguments.select { |k,v| COMMON_QUERY_PARAMS.include?(k) || valid_params.include?(k) }
         params = Hash[params] unless params.is_a?(Hash) # Normalize Ruby 1.8 and Ruby 1.9 Hash#select behaviour
         params
       end
