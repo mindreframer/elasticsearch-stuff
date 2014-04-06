@@ -182,4 +182,8 @@
     toptal/chewy:
       High-level Elasticsearch ruby framework based on official elasticsearch-ruby client
        122 commits, last change: 2014-03-26 03:00:30, 100 stars, 8 forks
+
+    yakaz/elasticsearch-analysis-combo:
+      Elasticsearch Combo Analyzer
+       50 commits, last change: 2014-02-13 12:15:49, 39 stars, 9 forks
 <!-- PROJECTS_LIST_END -->
