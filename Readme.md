@@ -179,6 +179,10 @@
       Fast, Elegant, ElasticSearch client
        308 commits, last change: , 325 stars, 45 forks
 
+    printercu/elastics-rb:
+      Simple ElasticSearch client with AR integration
+       32 commits, last change: 2014-11-11 - 09:01, 8 stars, 0 forks
+
     toptal/chewy:
       High-level Elasticsearch ruby framework based on official elasticsearch-ruby client
        146 commits, last change: , 127 stars, 14 forks
