@@ -12,6 +12,6 @@ https://github.com/nz/elasticmill.git
 https://github.com/pawelrychlik/duplitector.git
 https://github.com/polyfractal/elasticsearch-inquisitor.git
 https://github.com/PoseBiz/stretcher.git
+https://github.com/printercu/elastics-rb.git
 https://github.com/toptal/chewy.git
 https://github.com/yakaz/elasticsearch-analysis-combo.git
-https://github.com/printercu/elastics-rb.git
