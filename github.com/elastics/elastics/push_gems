@@ -1,0 +1,46 @@
+#! /usr/bin/env ruby
+
+require 'fileutils'
+include FileUtils
+
+gems = %w[ elastics-client
+           elastics-admin
+           elastics-scopes
+           elastics-models
+           elastics-rails
+           elastics-legacy ]
+
+begin
+
+  unless `git status -s`.empty?
+    puts 'aborted: the working tree is dirty!'
+    exit(1)
+  end
+
+  version = File.read('VERSION').strip
+
+  gems.each do |gem_name|
+    cd(gem_name) do
+      cp('../VERSION', './VERSION')
+      cp('../LICENSE', './LICENSE')
+      system %(gem build #{gem_name}.gemspec)
+      gemfile = "#{gem_name}-#{version}.gem"
+      system %(gem push #{gemfile})
+    end
+  end
+
+  system %(git tag #{version} && git push --tags)
+
+ensure
+
+  gems.each do |gem_name|
+    cd(gem_name) do
+      gemfile = "#{gem_name}-#{version}.gem"
+      remove_entry_secure gemfile, true
+      remove_entry_secure 'VERSION', true
+      remove_entry_secure 'LICENSE', true
+    end
+  end
+
+end
+
