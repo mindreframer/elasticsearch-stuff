@@ -129,23 +129,23 @@
 
     bleskes/sense:
       a json aware ElasticSearch front end
-       254 commits, last change: , 234 stars, 60 forks
+       254 commits, last change: 2014-04-01 - 10:16, 270 stars, 121 forks
 
     brewster/elastictastic:
       Object-document mapper and lightweight API adapter for ElasticSearch
-       323 commits, last change: , 77 stars, 10 forks
+       331 commits, last change: 2014-09-22 - 17:55, 82 stars, 11 forks
 
     cschuch/daedal-sl:
-      Ruby query-writing DSL for ElasticSearch built on Daedal
-       6 commits, last change: , 2 stars, 0 forks
+
+        commits, last change: ,  stars,  forks
 
     cschuch/daedal:
       Ruby classes for easier ElasticSearch query building
-       50 commits, last change: , 14 stars, 1 forks
+       61 commits, last change: , 16 stars, 4 forks
 
     ddnexus/flex:
       The ultimate ruby client for elasticsearch.
-       326 commits, last change: , 55 stars, 11 forks
+       326 commits, last change: 2013-11-14 - 12:33, 63 stars, 12 forks
 
     elastics/elastics:
       the ultimate ruby tools for elasticsearch
@@ -153,45 +153,45 @@
 
     elasticsearch/elasticsearch-rest-api-spec:
       JSON specification for the Elasticsearch's REST API. Deprecated - moved into the elasticsearch/elasticsearch repo
-       317 commits, last change: , 8 stars, 9 forks
+       317 commits, last change: 2014-01-28 - 13:29, 9 stars, 10 forks
 
     elasticsearch/elasticsearch-ruby:
       Ruby integrations for Elasticsearch
-       432 commits, last change: , 473 stars, 50 forks
+       508 commits, last change: 2014-11-16 - 08:58, 625 stars, 86 forks
 
     elbii/plunk:
       Human-friendly query language for Elasticsearch
-       85 commits, last change: , 10 stars, 0 forks
+       95 commits, last change: 2014-10-28 - 02:29, 17 stars, 2 forks
 
     npolar/icelastic:
-      Icelastic can be used to integrate Elasticsearch in your Rack applications. It offers advanced url query parsing for a wide range of search senarios.
-       82 commits, last change: , 2 stars, 0 forks
+      Cool URIs for Elasticsearch
+       200 commits, last change: 2014-10-30 - 10:51, 2 stars, 0 forks
 
     nz/elasticmill:
       Process your highly parallel Elasticsearch updates into efficient batches.
-       21 commits, last change: , 9 stars, 0 forks
+       21 commits, last change: 2013-02-09 - 00:53, 9 stars, 0 forks
 
     pawelrychlik/duplitector:
       A duplicate data detector engine PoC based on Elasticsearch.
-       42 commits, last change: , 10 stars, 1 forks
+       42 commits, last change: , 11 stars, 1 forks
 
     polyfractal/elasticsearch-inquisitor:
       Site plugin for Elasticsearch to help understand and debug queries.
-       60 commits, last change: , 290 stars, 31 forks
+       62 commits, last change: 2014-09-09 - 01:32, 395 stars, 35 forks
 
     PoseBiz/stretcher:
       Fast, Elegant, ElasticSearch client
-       308 commits, last change: , 325 stars, 45 forks
+       308 commits, last change: 2013-12-03 - 01:24, 344 stars, 52 forks
 
     printercu/elastics-rb:
       Simple ElasticSearch client with AR integration
-       32 commits, last change: 2014-11-11 - 09:01, 8 stars, 0 forks
+       39 commits, last change: 2014-11-16 - 08:36, 70 stars, 1 forks
 
     toptal/chewy:
       High-level Elasticsearch ruby framework based on official elasticsearch-ruby client
-       146 commits, last change: , 127 stars, 14 forks
+       306 commits, last change: 2014-11-16 - 17:29, 315 stars, 44 forks
 
     yakaz/elasticsearch-analysis-combo:
       Elasticsearch Combo Analyzer
-       51 commits, last change: , 41 stars, 10 forks
+       60 commits, last change: 2014-08-23 - 15:07, 50 stars, 13 forks
 <!-- PROJECTS_LIST_END -->
