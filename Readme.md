@@ -147,6 +147,10 @@
       The ultimate ruby client for elasticsearch.
        326 commits, last change: , 55 stars, 11 forks
 
+    elastics/elastics:
+      the ultimate ruby tools for elasticsearch
+       411 commits, last change: 2014-01-17 - 15:46, 5 stars, 2 forks
+
     elasticsearch/elasticsearch-rest-api-spec:
       JSON specification for the Elasticsearch's REST API. Deprecated - moved into the elasticsearch/elasticsearch repo
        317 commits, last change: , 8 stars, 9 forks
