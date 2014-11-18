@@ -16,3 +16,4 @@ https://github.com/PoseBiz/stretcher.git
 https://github.com/printercu/elastics-rb.git
 https://github.com/toptal/chewy.git
 https://github.com/yakaz/elasticsearch-analysis-combo.git
+https://github.com/ankane/searchkick.git
